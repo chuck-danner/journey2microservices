@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Cool Pen Store</title>
+
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.2.1/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="/">Main</a>
+    </nav>
+
+    <main role="main" class="container">
+
+        <div class="starter-template">
+            <h1>My Cool Pen Store</h1>
+            <h2>
+                <span>Cart</span>
+            </h2>
+        </div>
+        <div class="center">
+            <table class="table-center">
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Remove</th>
+                </tr>
+                <tr th:each="product,iter : ${cart.products}">
+                  <td th:text="${product.name}"></td>
+                  <td th:text="${product.price}"></td>
+                  <td><span text-align="center"><a th:href="@{'/cart/' + ${customer.id} + '/remove/' + ${iter.index}}">Remove</a></span></td>
+                </tr>
+              </table>
+        </div>
+
+    </main>
+    <!-- /.container -->
+
+    <script type="text/javascript" th:src="@{webjars/bootstrap/4.2.1/js/bootstrap.min.js}"></script>
+</body>
+
+</html>
