@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id; 
+    private int id;
 
     private String firstName;
 
@@ -23,11 +23,9 @@ public class Customer {
         this.lastName = lastName;
         this.address = address;
     }
-    
 
     public Customer() {
     }
-
 
     public int getId() {
         return id;
@@ -59,7 +57,6 @@ public class Customer {
 
     public void setAddress(String address) {
         this.address = address;
-    } 
-
+    }
 
 }

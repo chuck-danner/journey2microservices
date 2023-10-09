@@ -22,12 +22,12 @@ public class ProductsService {
     };
 
     @PostConstruct
-    public void init(){
+    public void init() {
         for (Product product : products) {
             saveProduct(product);
         }
     }
-    
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -36,14 +36,14 @@ public class ProductsService {
     }
 
     public Product getProduct(int id) {
-        Optional<Product> product =  productRepository.findById(id);
-        if(product.isPresent()){
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
             return product.get();
         }
         return null;
     }
 
-    public Product saveProduct(Product product){
+    public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
 

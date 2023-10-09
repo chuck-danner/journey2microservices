@@ -23,7 +23,7 @@ public class ReviewService {
     };
 
     @PostConstruct
-    public void init(){
+    public void init() {
         for (Review review : reviews) {
             saveReview(review);
         }
@@ -32,11 +32,11 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public List<Review> getReviews(int productId){
+    public List<Review> getReviews(int productId) {
         return reviewRepository.getByProductId(productId);
     }
 
-    public Review saveReview(Review review){
+    public Review saveReview(Review review) {
         return reviewRepository.save(review);
     }
 

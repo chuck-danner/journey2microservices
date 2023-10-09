@@ -21,26 +21,26 @@ public class CustomerService {
     };
 
     @PostConstruct
-    public void init(){
+    public void init() {
         for (Customer customer : customers) {
             saveCustomer(customer);
         }
     }
 
-@Autowired
-private CustomerRepository customerRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
-public Customer getCustomer( int id){
-    Optional<Customer> customer = customerRepository.findById(id);
-    if(customer.isPresent()){
-        return customer.get();
+    public Customer getCustomer(int id) {
+        Optional<Customer> customer = customerRepository.findById(id);
+        if (customer.isPresent()) {
+            return customer.get();
+        }
+        return null;
+
     }
-    return null;
 
-}
-
-public Customer saveCustomer(Customer customer){
-    return customerRepository.save(customer);
-}
+    public Customer saveCustomer(Customer customer) {
+        return customerRepository.save(customer);
+    }
 
 }
