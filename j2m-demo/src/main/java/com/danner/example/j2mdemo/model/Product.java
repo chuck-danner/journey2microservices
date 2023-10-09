@@ -1,6 +1,11 @@
 package com.danner.example.j2mdemo.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
+@Entity
 public class Product {
     
     private String name;
@@ -8,7 +13,9 @@ public class Product {
     private String description; 
 
     private String price; 
-
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; 
    
 
@@ -18,6 +25,11 @@ public class Product {
         this.price = price;
         this.id = id;
     }
+    
+
+    public Product() {
+    }
+
 
     public String getName() {
         return name;

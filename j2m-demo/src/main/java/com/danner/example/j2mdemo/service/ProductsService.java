@@ -1,8 +1,14 @@
 package com.danner.example.j2mdemo.service;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.danner.example.j2mdemo.model.Product;
+import com.danner.example.j2mdemo.repository.ProductRepository;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class ProductsService {
@@ -15,12 +21,30 @@ public class ProductsService {
             new Product("Purple Pen", "Purple Fountain Pen", "$22.99", 5)
     };
 
-    public Product[] getProducts() {
-        return products;
+    @PostConstruct
+    public void init(){
+        for (Product product : products) {
+            saveProduct(product);
+        }
+    }
+    
+    @Autowired
+    private ProductRepository productRepository;
+
+    public Iterable<Product> getProducts() {
+        return productRepository.findAll();
     }
 
     public Product getProduct(int id) {
-        return products[id - 1];
+        Optional<Product> product =  productRepository.findById(id);
+        if(product.isPresent()){
+            return product.get();
+        }
+        return null;
+    }
+
+    public Product saveProduct(Product product){
+        return productRepository.save(product);
     }
 
 }

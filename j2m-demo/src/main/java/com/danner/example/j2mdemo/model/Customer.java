@@ -1,7 +1,14 @@
 package com.danner.example.j2mdemo.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Customer {
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id; 
 
     private String firstName;
@@ -16,6 +23,11 @@ public class Customer {
         this.lastName = lastName;
         this.address = address;
     }
+    
+
+    public Customer() {
+    }
+
 
     public int getId() {
         return id;

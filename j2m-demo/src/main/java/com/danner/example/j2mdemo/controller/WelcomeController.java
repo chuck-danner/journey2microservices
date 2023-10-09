@@ -17,11 +17,6 @@ import com.danner.example.j2mdemo.service.ProductsService;
 @Controller
 public class WelcomeController {
 
-    @Value("${welcome.message}")
-    private String message;
-
-     private List<String> tasks = Arrays.asList("a", "b", "c", "d", "e", "f", "g");
-
      @Autowired
      ProductsService productsService;
 
@@ -30,23 +25,13 @@ public class WelcomeController {
 
      @GetMapping("/")
      public String main(Model model){
-       Product[] products = productsService.getProducts();
+       Iterable<Product> products = productsService.getProducts();
       
-        model.addAttribute("message", message);
-        model.addAttribute("tasks", tasks);
         model.addAttribute("products", products);
         model.addAttribute("customer", customerService.getCustomer(1));
 
         return "welcome";
      }
 
-     @GetMapping("/hello") 
-     public String mainWithParam(@RequestParam(name = "name", required = false, defaultValue = "") 
-     String name, Model model ){
-
-        model.addAttribute("message", name);
-
-        return "welcome";
-     }
     
 }
