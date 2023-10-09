@@ -13,7 +13,8 @@ public class Review {
     private int productId;
     private int score;
     private String review;
-
+    
+    
     public Review(int id, int productId, int score, String review) {
         this.id = id;
         this.productId = productId;
