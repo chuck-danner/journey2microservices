@@ -1,31 +1,28 @@
 package com.example.danner.j2micro.microservice.model;
 
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Review {
-   @jakarta.persistence.Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int productId;
     private int score;
     private String review;
-    
+
     public Review(int id, int productId, int score, String review) {
         this.id = id;
         this.productId = productId;
         this.score = score;
         this.review = review;
     }
-    
 
     public Review() {
     }
-
 
     public int getId() {
         return id;

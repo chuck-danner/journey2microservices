@@ -14,8 +14,7 @@ public class ReviewService {
 
     @Value("${micro.review.url}")
     private String reviewsURL;
-
-    public List<Review> getReviews(int productId) {
+  
     public List<Review> getReviews(int productId) {
         RestTemplate template = new RestTemplate();
         String targetUrl = reviewsURL + productId;

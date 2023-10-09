@@ -15,24 +15,23 @@ import com.example.danner.j2micro.microservice.service.ReviewService;
 
 @RestController
 public class ReviewMicroController {
-   
+
     @Autowired
     private ReviewService reviewService;
-   
+
     @GetMapping("/reviews/{productId}")
-    public List<Review> getReviews(@PathVariable  int productId){
+    public List<Review> getReviews(@PathVariable int productId) {
         return reviewService.getReviews(productId);
     }
 
     @DeleteMapping("/review/{reviewId}")
-    public Review deleteReviews(@PathVariable  int reviewId){
+    public Review deleteReviews(@PathVariable int reviewId) {
         return reviewService.deleteReview(reviewId);
     }
 
     @PostMapping("/reviews/{productId}")
-    public Review saveReview(@RequestBody Review review){
+    public Review saveReview(@RequestBody Review review) {
         return reviewService.saveReview(review);
     }
-
 
 }
