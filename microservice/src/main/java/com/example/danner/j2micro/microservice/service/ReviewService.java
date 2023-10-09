@@ -15,7 +15,19 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public List<Review> getReviews(int productId) {
+    public Iterable<Review> getReviews() {
+        return reviewRepository.findAll();
+    }
+
+     public Review getReview(int reviewId) {
+        Optional<Review> review = reviewRepository.findById(reviewId);
+        if(review.isPresent()){
+            return review.get();
+        }
+        return null;
+    }
+
+     public List<Review> getReviewsByProductId(int productId) {
         return reviewRepository.findByProductId(productId);
     }
 
