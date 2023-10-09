@@ -9,6 +9,16 @@
             "projectName": "j2m-demo",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroserviceApplication<microservice>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.danner.j2micro.microservice.MicroserviceApplication",
+            "projectName": "microservice",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

@@ -1,43 +1,26 @@
 package com.danner.example.j2mdemo.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.danner.example.j2mdemo.model.Review;
-import com.danner.example.j2mdemo.repository.ReviewRepository;
-
-import jakarta.annotation.PostConstruct;
 
 @Service
 public class ReviewService {
-    private ArrayList<Review> reviews = new ArrayList<>() {
-        {
-            add(new Review(1, 1, 5, "Great blue Pen!"));
-            add(new Review(2, 1, 4, "Pretty good pen."));
-            add(new Review(3, 2, 5, "Great silver Pen!"));
-            add(new Review(4, 2, 1, "The worst pen ever."));
-        }
-    };
 
-    @PostConstruct
-    public void init() {
-        for (Review review : reviews) {
-            saveReview(review);
-        }
-    }
-
-    @Autowired
-    private ReviewRepository reviewRepository;
+    @Value("${micro.review.url}")
+    private String reviewsURL;
 
     public List<Review> getReviews(int productId) {
-        return reviewRepository.getByProductId(productId);
-    }
+        RestTemplate template = new RestTemplate();
+        String targetUrl = reviewsURL + productId;
+        Review[] reviews = template.getForObject(targetUrl, Review[].class);
 
-    public Review saveReview(Review review) {
-        return reviewRepository.save(review);
+        return java.util.Arrays.asList(reviews);
+
     }
 
 }
