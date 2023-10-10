@@ -10,7 +10,7 @@ import com.danner.example.j2mdemo.service.CustomerService;
 import com.danner.example.j2mdemo.service.ProductsService;
 
 @Controller
-public class WelcomeController {
+public class ProductController {
 
    @Autowired
    ProductsService productsService;
@@ -25,7 +25,7 @@ public class WelcomeController {
       model.addAttribute("products", products);
       model.addAttribute("customer", customerService.getCustomer(1));
 
-      return "welcome";
+      return "products";
    }
 
 }
