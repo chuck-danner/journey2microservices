@@ -25,7 +25,9 @@ public class CartService {
 
     public Cart addToCart(int cartId, Product product) {
         Cart cart = getCart(cartId);
-        cart.getProducts().add(product);
+        if (!cart.getProducts().contains(product)) {
+            cart.getProducts().add(product);
+        }
 
         return cartRepository.save(cart);
 
@@ -35,7 +37,6 @@ public class CartService {
         Cart cart = getCart(cartId);
         cart.getProducts().remove(index);
         return cartRepository.save(cart);
-
     }
 
 }
