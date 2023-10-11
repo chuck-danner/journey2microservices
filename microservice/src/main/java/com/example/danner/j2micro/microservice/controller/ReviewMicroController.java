@@ -26,8 +26,8 @@ public class ReviewMicroController {
     }
 
     @GetMapping("/reviews/{reviewId}")
-    public List<Review> getReview(@PathVariable int productId) {
-        return reviewService.getReviewsByProductId(productId);
+    public Review getReview(@PathVariable int reviewId) {
+        return reviewService.getReview(reviewId);
     }
 
     @DeleteMapping("/reviews/{reviewId}")
