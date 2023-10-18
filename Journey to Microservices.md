@@ -1,6 +1,14 @@
 # Intro #
 I'm Chuck Danner. I'm a Cloud and System architect at IBM and founder of the Cloud Development Center of Excellence for the Rocket Center Client Innovation Center. I've been working on cloud-based development projects since 2015, and focused on cloud-native application, microservices, and containerization. I'm currently the Lead Systems Architect for the Electronic Records Archive at the National Archives and Records Administration. 
 
+# The Problem #
+
+A few years ago I joined a large program to help them migrate from their on-prem data center to a cloud environment. What I found when I joined was a program in flux, they had started to transition to agile, but seeing some issues. They were a very large team with a large, complex code base. There was a lot of institution knowledge and it took a very long time on on-board any new members. 
+
+Deployments were very difficult. They would release quarterly, at best, and it would take an entire weekend. They wanted to move to release at the end of every sprint. Merges were difficult as many teams were dependent on each other. Some parts of the application was often slow, bogging down the entire system. 
+
+They had lots of issue, and they needed a multifaced solution, but part of that solution was microservice architecture.  
+
 # Microservices #
 Microservice Architecture have really gained in popularity over the last decade and are often used in cloud-native application development. 
 
@@ -37,6 +45,13 @@ Microservices communicate with each other over well defined, light-weight protoc
 
 The typical comparison is microservice verses a monolithic service. A monolithic service is deployed scaled and managed together. Applications often first start as monolithic applications. Everything is in one place, easy to understand, easy to deploy and easy to manage. If there is an error in the application there is often only one place to look. Where microservices are often distributed across multiple servers. Managing multiple servers is more complex, trying to track down where an issue resides is more complex and managing deployments is more complex, so why do we ever choose microservices over a monolithic service. Scalability, Flexibility, and Failure Isolation.  We have also discovered ways to mitigate many of the issue with microservices, making it the preferred choice in many instances. 
 
+## Let's take a look #
+
+I have a sample Monolithic application here, "My Cool Pen Store." It is simple, it has a page that list the pens for sale. You can see customer information, you can add and remove items to the cart and you can see reviews for each pen.  
+
+The Architecture is pretty simple. First, we have a UI that uses Thyme-leaf, a server side rendering engine. That means that the server needs to have all of the required information to display the page prior to serving the page. It has web controllers for managing the requests, services for handling the business logic and a database to store the persistent data.
+
+So why might we want to break this up into microservices?
 
 ## When should I consider splitting up a monolithic application to microservices? #
 
@@ -46,6 +61,70 @@ Here are three key things that are happening to consider splitting up an applica
 1. Multiple teams working on an application and getting in each others way
 1. Fault isolation and high availability 
 1. Technology diversity
+
+# Moving from monolith to microservice #
+
+Use the monolith as the default - Sam Newman, Martin Fowler
+
+There are two ways two key ways to modernize an application: big bang and iterative. Big bang modernization is where you replace large parts or even the entire application as one big release, one big change. You often work on these big changes for months or years before the user is able to use them. Iterative modernization is when you modernize the application mostly in place with small little releases, and the application slowly evolves over time. This method allows us to deliver value to the user sooner, and allows us to pivot more if priorities change. We have a method for doing this, it is called the Strangler or Strangler Fig Pattern. 
+
+The Strangler Fig Pattern was coined by Martin Fowler. The Stranger Fig is a plant that grows on trees. It slowly grows and replaces parts of the tree, piece by piece until it has enveloped the entire tree, and the tree dies. In our case this is what we do with a monolithic application. 
+
+## First lets talk about domains #
+
+So how do we know how to break up a monolithic application? Where should we draw the lines to split out. We use Domain Driven Design. 
+
+Conway's Law: 
+Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization's communication structure. — Melvin E. Conway
+
+Domain driven design is a software approach where model software to match a business domain. Sometimes domains can be easily found by who the product owner is for that piece of an application. If one person is responsible for one piece of an application that is likely a domain. 
+
+## Sample App Split # 
+
+So how can we split up our sample application. We would split it up by Functionality. Customers, products, cart, and reviews. We can look at each of these and try to find the one with the fewest connection. It looks like reviews would be a good candidate to start with. 
+
+## Defining the API #
+
+One of the most important parts of creating your microservice is defining the method with which it will communicate with all other services. Everything else is under the control of the microservice. I can change the underlying functionality, technology, then we have full control to manage that, but if we change the API, that affects every other service that calls that api.  
+
+# Defining the API for the Sample#
+
+Often times this is will be a Rest API. In this case we will define a restful api for creating and  retrieving reviews by product id. We can add endpoints to create, read, update and delete reviews. 
+
+One of the best things about defining this api is that it is now flexible. I can have multiple interfaces and other systems interacting with this API. We can also change the underlying technology under this service with out having to update other parts of the application. 
+
+
+## De-tangling the data
+
+One of the most complicated part of a lot of systems is the database. You have normalized data, foreign keys, stored procedures that execute multiple transaction. Lots of tangles reaching into different areas in the database. One of the key tenants of microservice is that each microservice keeps and manages its own data. The data could be stored in different databases, on different servers, using different technologies. Some could store their data as SQL, some as No-SQL. So we need to separate the data, a good start is to put the new tables in a new schema as a first layer of separation. If you need to keep transactions across multiple services you need to utilize Sagas, but that in its self is a large topic. 
+
+## De-tangling our sample app #
+
+Here we can pull the data out, and store it in a different database. This allows us to scale independently, or even use a different method for storing this data. 
+
+
+## Setting up a facade # 
+
+Now we need to isolate this section as its own domain. First we can separate the application creating a new package and moving the code for that domain into the new package. We can then quickly look for references to that code. Once you have separated out the domain code for you service you set up a facade. If you are going to use RESTful web calls to communicate with your services, you set up your REST controller and services to access the functionality with in the new service. Then to access that functionality you call those RESTful controllers using the API you developed. 
+
+You can also setup an API gateway in front of the microservices to give you greater flexibility. 
+
+## Setting up the facade #
+
+We add the rest Controller and call it using a rest template in the service layer. 
+
+## Stand Alone Service #
+
+Now we can pull the service out by itself. You should be able to develop, test, deploy, and operate this application independently. 
+
+You can also setup an API gateway in front of the microservices to give you greater flexibility. 
+
+ 
+## User interface #
+
+The user interface should be its own component, which reaches to other service. Now that calls are to API, you can have multiple user interfaces calling the same services, like web and mobile applications. 
+
+There is also the potential to split the User interface into micro-front ends. As with microservices, you should start with a monolith and break them up, iteratively, as needed.  
 
 # Three Things #
 
@@ -75,50 +154,7 @@ Containerization and especially container orchestrators, and microservice are a 
 
 Container Orchestrators, like Kubernetes, can handle a lot of thing for microservice like, routing, load balancing, service discovery, fault isolation, and container management.
 
-# Moving from monolith to microservice #
 
-Use the monolith as the default - Sam Newman, Martin Fowler
-
-There are two ways two key ways to modernize an application: big bang and iterative. Big bang modernization is where you replace large parts or even the entire application as one big release, one big change. You often work on these big changes for months or years before the user is able to use them. Iterative modernization is when you modernize the application mostly in place with small little releases, and the application slowly evolves over time. This method allows us to deliver value to the user sooner, and allows us to pivot more if priorities change. We have a method for doing this, it is called the Strangler or Strangler Fig Pattern. 
-
-The Strangler Fig Pattern was coined by Martin Fowler. The Stranger Fig is a plant that grows on trees. It slowly grows and replaces parts of the tree, piece by piece until it has enveloped the entire tree, and the tree dies. In our case this is what we do with a monolithic application. 
-
-## First lets talk about domains #
-
-So how do we know how to break up a monolithic application? Where should we draw the lines to split out. We use Domain Driven Design. 
-
-Conway's Law: 
-Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization's communication structure. — Melvin E. Conway
-
-Domain driven design is a software approach where model software to match a business domain. Sometimes domains can be easily found by who the product owner is for that piece of an application. If one person is responsible for one piece of an application that is likely a domain. 
-
-## Defining the API #
-
-One of the most important parts of creating your microservice is defining the method with which it will communicate with all other services. Everything else is under the control of the microservice. I can change the underlying functionality, technology, then we have full control to manage that, but if we change the API, that affects every other service that calls that api.  
-
-
-## De-tangling the data
-
-One of the most complicated part of a lot of systems is the database. You have normalized data, foreign keys, stored procedures that execute multiple transaction. Lots of tangles reaching into different areas in the database. One of the key tenants of microservice is that each microservice keeps and manages its own data. The data could be stored in different databases, on different servers, using different technologies. Some could store their data as SQL, some as No-SQL. So we need to separate the data, a good start is to put the new tables in a new schema as a first layer of separation. If you need to keep transactions across multiple services you need to utilize Sagas, but that in its self is a large topic. 
-
-## Setting up a facade # 
-
-Now we need to isolate this section as its own domain. First we can separate the application creating a new package and moving the code for that domain into the new package. We can then quickly look for references to that code. Once you have separated out the domain code for you service you set up a facade. If you are going to use RESTful web calls to communicate with your services, you set up your REST controller and services to access the functionality with in the new service. Then to access that functionality you call those RESTful controllers using the API you developed. 
-
-You can also setup an API gateway in front of the microservices to give you greater flexibility. 
-
-## Stand Alone Service #
-
-Now we can pull the service out by itself. You should be able to develop, test, deploy, and operate this application independently. 
-
-You can also setup an API gateway in front of the microservices to give you greater flexibility. 
-
- 
-## User interface #
-
-The user interface should be its own component, which reaches to other service. Now that calls are to API, you can have multiple user interfaces calling the same services, like web and mobile applications. 
-
-There is also the potential to split the User interface into micro-front ends. As with microservices, you should start with a monolith and break them up, iteratively, as needed.  
 
 ## Conclusion #
 
@@ -138,3 +174,4 @@ And how to spit them up:
 - Setup the facade
 - De-tangle the data
 - Separate the Service
+- Continue the Journey - Select the next domain to split out
